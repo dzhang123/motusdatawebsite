@@ -7,7 +7,8 @@ var Schema = mongoose.Schema;
 var DynacardSchema = new Schema(
     {
         name: {type: String, min: 1, required: true},
-        cardInfo: {type:Schema.Types.ObjectId, ref: 'CardInfo', required: true},
+        cardInfo: {type:Schema.Types.ObjectId, ref: 'Card', required: true},
+        minimumWeight: {type: Number},
         evaluatedCardType: {type: String, enum: [   'Full Pump', 'Tubing Movement', 'Fluid Pound', 
                                                     'Gas Interference', 'Pump Hitting', 'Bent Barrel', 
                                                     'Worn Plunger', 'Worn Standing', 'Worn Or Split', 

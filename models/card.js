@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var CardInfoSchema = new Schema(
+var CardSchema = new Schema(
     {
         name: {type: String, min: 1, required: true},
         positionAngle: [{type: Number}],
@@ -16,12 +16,12 @@ var CardInfoSchema = new Schema(
     }
 );
 
-// Virtual for CardInfo url.
-CardInfoSchema
+// Virtual for Card url.
+CardSchema
 .virtual('url')
 .get(function () {
-    return '/catalog/cardinfo/' + this._id;
+    return '/catalog/card/' + this._id;
 });
 
 
-module.exports = mongoose.model('CardInfo', CardInfoSchema);
+module.exports = mongoose.model('Card', CardSchema);
