@@ -8,11 +8,12 @@ var dynacard_controller = require('../controllers/dynacardController');
 /// ROUTES ///
 
 // GET Dynacard home page.
-router.get('/', dyncard_controller.index);
+router.get('/', dynacard_controller.index);
 
 // GET request for creating a new Dynacard. NOTE This must come before routes that display Dynacard (uses id).
 router.get('/dynacard/create', dynacard_controller.dynacard_create_get);
 
+/*
 // POST request for creating Dyancards.
 router.post('/dynacard/create', dynacard_controller.dynacard_create_post);
 
@@ -43,5 +44,5 @@ router.get('/card/create', card_controller.cardinfo_create_get);
 // POST request to create a new Card.
 router.post('/card/create', card_controller.card_create_post);
 
-
+*/
 module.exports = router;

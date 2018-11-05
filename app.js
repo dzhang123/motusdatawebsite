@@ -11,7 +11,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var dynacards = require('./routers/dynacards');
+var catalog = require('./routes/catalog');
 
 var app = express();
 
