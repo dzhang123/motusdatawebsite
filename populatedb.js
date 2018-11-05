@@ -52,6 +52,33 @@ function createCardtypes(cb) {
             function(callback) {
               cardtypeCreate('Fluid Pound', 'Fluid Pound', callback);
             },
+            function(callback) {
+              cardtypeCreate('Gas Interference', 'Gas Interference', callback);
+            },
+            function(callback) {
+              cardtypeCreate('Pump Hitting', 'Pump Hitting', callback);
+            },
+            function(callback) {
+              cardtypeCreate('Bent Barrel', 'Bent Barrel', callback);
+            },
+            function(callback) {
+              cardtypeCreate('Worn Plunger', 'Worn Plunger', callback);
+            },
+            function(callback) {
+              cardtypeCreate('Worn Standing', 'Worn Standing', callback);
+            },
+            function(callback) {
+              cardtypeCreate('Worn Or Split', 'Worn Or Split', callback);
+            },
+            function(callback) {
+              cardtypeCreate('Fluid Friction', 'Fluid Friction', callback);
+            },
+            function(callback) {
+              cardtypeCreate('Drag Friction', 'Drag Friction', callback);
+            },
+            function(callback) {
+              cardtypeCreate('Undetermined', 'Undetermined', callback);
+            }
         ],
         // optional callback
         cb);
