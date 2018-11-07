@@ -10,6 +10,8 @@ var async = require('async');
 
 exports.index = (req, res, next) => {
     //res.send('To Be Implemented');
+    res.render('index', {title: 'Dynacard List'});
+    /*
     Dynacard.find({}, 'name evaluatedCardType').populate('evaludatedCardType')
             .exec(function(err, list_dynacards) {
                 if (err) { 
@@ -17,6 +19,7 @@ exports.index = (req, res, next) => {
                 }
                 res.render('index', {title: 'Dynacard List', dynacard_list: list_dynacards});
             });
+          */  
 /*
 CardType.find().exec (function (err, list_cardtypes) {
         if (err) 
