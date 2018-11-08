@@ -19,6 +19,10 @@ var app = express();
 var mongoose = require('mongoose');
 var dev_db_url = 'mongodb://dzhang:dzhang123@ds241133.mlab.com:41133/local_library';
 var mongoDB = process.env.MONGODB_URI || dev_db_url;
+<<<<<<< HEAD
+=======
+//mongoose.connect(mongoDB);
+>>>>>>> bfef874d9159ee4567ebfedc58b7e168959e3f3f
 mongoose.connect(mongoDB, {useNewUrlParser: true});
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
