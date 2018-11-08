@@ -16,18 +16,18 @@ html(lang='en')
           div
             form(method='POST', action='/catalog/upload' enctype='multipart/form-data')
               div.form-group
-                label(for='upload_file') Upload dynacard files:
+                label(for='upload_files') Upload dynacard files:
                 input#upload_files.form-control(type='file' multiple name='fileupload')
-              button.btn.btn-primary(type='button') Upload
+              button.btn.btn-primary(type='submit') Upload
           div
             form(method='POST', action='/catalog/filter')
               div.form-group
                 label(for='filter_results') Enter search term:
                 input#filter_results.form-control(type='text' placeholder='full pump')
-              button.btn.btn-primary(type='button') Filter results
+              button.btn.btn-primary(type='submit') Filter results
           div
             form(method='POST' action='/catalog/run')
-              button.btn.btn-primary(type='button') Run Analysis
+              button.btn.btn-primary(type='submit') Run Analysis
         main
           block content
 

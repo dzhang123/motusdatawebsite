@@ -10,6 +10,9 @@ var dynacard_controller = require('../controllers/dynacardController');
 // GET Dynacard home page.
 router.get('/', dynacard_controller.index);
 
+// POST dynacard files
+router.post('/upload', dynacard_controller.dynacard_upload_post);
+
 // GET request for creating a new Dynacard. NOTE This must come before routes that display Dynacard (uses id).
 router.get('/dynacard/create', dynacard_controller.dynacard_create_get);
 

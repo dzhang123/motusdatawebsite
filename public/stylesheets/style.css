@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  /*width: 800px;*/
+  width: 800px;
   margin: 0 auto;
 }
 
@@ -55,12 +55,12 @@ header, aside, main, footer {
 }
 
 header {
-  /*border: 5px solid black;*/
-  border-bottom: 0;
+  border-bottom: 1px solid black;
+  border-bottom: 1;
 }
 
 aside {
-  border-right: 5px;
+  border-right: 1px solid black;
 }
 
 body > div {

@@ -1,5 +1,8 @@
 'use strict';
 
+var formidable = require('formidable');
+var fs = require('fs');
+
 var Dynacard = require('../models/dynacard');
 var CardType = require('../models/cardtype');
 
@@ -33,5 +36,34 @@ CardType.find().exec (function (err, list_cardtypes) {
 
 exports.dynacard_create_get = (req, res) => {
     res.send('To be implemented');
+};
+
+exports.dynacard_upload_post = (req, res, next) => {
+    var form = new formidable.IncomingForm(), 
+        files = [],
+        fields = [];
+
+    form.uploadDir = req.rootPath + '/public/uploads';
+
+    form.on ('field', function (field, value) {
+        fields.push([field, value]);
+    });
+
+    form.on ('file', (field, file) => {
+        console.log(file.name);
+        // rename is needed otherwise it is magic characters in the file name
+        fs.rename(file.path, form.uploadDir + '/' + file.name, function (err) {
+            console.log(err);
+        });
+
+        files.push([field, file]);
+    })
+
+    form.on ('end', () => {
+        console.log('done');
+        res.redirect('/'); // what is the right actions afterwards?
+    });
+
+    form.parse(req);
 };
 
