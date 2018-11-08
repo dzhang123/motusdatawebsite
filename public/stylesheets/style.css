@@ -2,12 +2,12 @@
 
 html {
   font-family: 'Raleway', sans-serif;
-  background-color: yellow;
+  /*background-color: yellow;*/
   font-size: 10px;
 }
 
 body {
-  width: 800px;
+  /*width: 800px;*/
   margin: 0 auto;
 }
 
@@ -55,22 +55,22 @@ header, aside, main, footer {
 }
 
 header {
-  border: 5px solid black;
+  /*border: 5px solid black;*/
   border-bottom: 0;
 }
 
 aside {
-  border-right: 5px solid black;
+  border-right: 5px;
 }
 
 body > div {
-  border: 5px solid black;
+  /*border: 5px solid black;*/
   display: flex;
 }
 
 footer {
-  border: 5px solid black;
-  border-top: 0;
+  border-top: 1px solid black;
+  border-top: 1;
 }
 
 aside {
