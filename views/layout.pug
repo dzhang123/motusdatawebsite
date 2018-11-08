@@ -14,8 +14,10 @@ html(lang='en')
       div
         aside
           div
-            form(method='POST', action='/catalog/upload')
-              label(for='upload_file') Update a dynacard file:
+            form(method='POST', action='/catalog/upload' enctype='multipart/form-data')
+              div.form-group
+                label(for='upload_file') Upload dynacard files:
+                input#upload_files.form-control(type='file' multiple name='fileupload')
               button.btn.btn-primary(type='button') Upload
           div
             form(method='POST', action='/catalog/filter')
