@@ -38,6 +38,7 @@ exports.dynacard_create_get = (req, res) => {
     res.send('To be implemented');
 };
 
+// POST request to upload dynacard files, csv files
 exports.dynacard_upload_post = (req, res, next) => {
     var form = new formidable.IncomingForm(), 
         files = [],
@@ -51,7 +52,7 @@ exports.dynacard_upload_post = (req, res, next) => {
 
     form.on ('file', (field, file) => {
         console.log(file.name);
-        // rename is needed otherwise it is magic characters in the file name
+        // rename is necessary, otherwise it is magic characters in the file name
         fs.rename(file.path, form.uploadDir + '/' + file.name, function (err) {
             console.log(err);
         });
@@ -66,4 +67,10 @@ exports.dynacard_upload_post = (req, res, next) => {
 
     form.parse(req);
 };
+
+
+exports.dynacard_upload_get = (req,res, next) => {
+
+}
+
 

@@ -5,7 +5,8 @@ html(lang='en')
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel="stylesheet", href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous")
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
@@ -33,4 +34,25 @@ html(lang='en')
 
       footer
         p what is in the footer
-   
+      script.
+        $(document).ready(function () {
+          var options = {
+            beforeSubmit: showRequest, // pre-sumbit callback
+            success: showResponse // post-submit callback
+          };
+          // bind to the form's submit event
+          $('#frmUploader').submit(function () {
+            $(this).ajaxSubmit(options);
+            // aways return false to prevent standard browser submit and page navigation
+            return false;
+          });
+        });
+        // pre-submit function callback
+        function showRequest(formData, jgForm, options) {
+          alert('Uploading is starting.');
+          return true;
+        }
+        // post-submit callback
+        function showResponse(responseText, statusText, xhr, $form) {
+          //alert('status: ' + statusText + '\n\nresponseText: \n' + responseText);
+        }
