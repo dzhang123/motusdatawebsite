@@ -14,11 +14,13 @@ var async = require('async');
 // GET request.
 // 1. if any csv file exists in /public/uploads/ folder, call python to generate png (for now) to display and then csv file and upload/store the zip file in mongoodb. Once stored, delete the csv file
 // 2. if none, retrieve csv files from mongoodb, call python to create png file to display.
+
+// Note: whats next? read promise and async from this site, https://developers.google.com/web/fundamentals/primers/promises
 exports.index = (req, res, next) => {
     //res.send('To Be Implemented');
     res.render('index', {title: 'Dynacard List'});
 
-    
+
 
     /*
     Dynacard.find({}, 'name evaluatedCardType').populate('evaludatedCardType')
