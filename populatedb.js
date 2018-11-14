@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
-console.log('This script populates some test card types, cards, and dynacards to mongo database. Specified database as argument - e.g.: populatedb mongodb://your_username:your_password@your_dabase_url');
+console.log('This script populates some test card types to mongo database. \
+            Specified database as argument -  e.g.: populatedb mongodb://your_username:your_password@your_dabase_url');
 
 // Get arguments passed on command line
 var userArgs = process.argv.slice(2);
@@ -11,7 +12,7 @@ if (!userArgs[0].startsWith('mongodb://')) {
 
 var async = require('async')
 var CardType = require('./models/cardtype')
-var Card = require('./models/card')
+//var Card = require('./models/card')
 var Dynacard = require('./models/dynacard')
 
 var mongoose = require('mongoose');
@@ -44,40 +45,40 @@ function createCardtypes(cb) {
     async.parallel(
         [
             function(callback) {
-                cardtypeCreate('Full Pump', 'Full Pump', callback);
+                cardtypeCreate('full pump', 'Full Pump', callback);
             },
             function(callback) {
-              cardtypeCreate('Tubing Movement', 'Tubing Movement', callback);
+              cardtypeCreate('tubing movement', 'Tubing Movement', callback);
             },
             function(callback) {
-              cardtypeCreate('Fluid Pound', 'Fluid Pound', callback);
+              cardtypeCreate('fluid pound', 'Fluid Pound', callback);
             },
             function(callback) {
-              cardtypeCreate('Gas Interference', 'Gas Interference', callback);
+              cardtypeCreate('gas interference', 'Gas Interference', callback);
             },
             function(callback) {
-              cardtypeCreate('Pump Hitting', 'Pump Hitting', callback);
+              cardtypeCreate('pump hitting', 'Pump Hitting', callback);
             },
             function(callback) {
-              cardtypeCreate('Bent Barrel', 'Bent Barrel', callback);
+              cardtypeCreate('bent barrel', 'Bent Barrel', callback);
             },
             function(callback) {
-              cardtypeCreate('Worn Plunger', 'Worn Plunger', callback);
+              cardtypeCreate('worn plunger', 'Worn Plunger', callback);
             },
             function(callback) {
-              cardtypeCreate('Worn Standing', 'Worn Standing', callback);
+              cardtypeCreate('worn standing', 'Worn Standing', callback);
             },
             function(callback) {
-              cardtypeCreate('Worn Or Split', 'Worn Or Split', callback);
+              cardtypeCreate('worn or split', 'Worn Or Split', callback);
             },
             function(callback) {
-              cardtypeCreate('Fluid Friction', 'Fluid Friction', callback);
+              cardtypeCreate('fluid friction', 'Fluid Friction', callback);
             },
             function(callback) {
-              cardtypeCreate('Drag Friction', 'Drag Friction', callback);
+              cardtypeCreate('drag friction', 'Drag Friction', callback);
             },
             function(callback) {
-              cardtypeCreate('Undetermined', 'Undetermined', callback);
+              cardtypeCreate('undetermined', 'Undetermined', callback);
             }
         ],
         // optional callback
