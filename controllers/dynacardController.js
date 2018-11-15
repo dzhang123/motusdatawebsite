@@ -2,6 +2,7 @@
 
 var formidable = require('formidable');
 var fs = require('fs');
+var assert = require('assert');
 
 var Dynacard = require('../models/dynacard');
 var CardType = require('../models/cardtype');
@@ -105,7 +106,6 @@ function processUploadedFiles (req, res, next) {
         let fileStat = fs.statSync(uploadDir + '/' + file).isDirectory();
         if (!fileStat) {
             if (file.split('.').pop() === 'csv') {
-                arr.push(file);
                 let pyPromise = new Promise( function (resolve, reject) {
                     const spawn = require('child_process').spawn;
                     const runPy = spawn ('python', ['./csvToImage.py', uploadDir + '/' + file]);
@@ -114,7 +114,6 @@ function processUploadedFiles (req, res, next) {
                     predPy.stdout.on('data', function(data) {
                         console.log(data.toString());
                         var me = data.toString().trim();
-                        var st = 'abc';
                         resolve(data);
                     });
                     predPy.stderr.on('err', (err) => {
@@ -125,15 +124,53 @@ function processUploadedFiles (req, res, next) {
                     // create the dynacard in mongoodb
                     var pred = prediction.toString().trim();
                     CardType.find({'name' : pred})
+                            .limit(1)
                             .exec( (err, type) => {
                                 if (err) {
-                                    
+                                    return next(err);
                                 }
                                 // find it
-                                var mytype = type.name;
-                                var todo='todo';
+                                //var mytype = type[0].name;
+                                // create a Dynacard object with the information above (todo: sanitize the data)
+                                var dynacard = new Dynacard (
+                                    {
+                                        name: file.split('.').shift(),
+                                        filePath: uploadDir + '/' + file,
+                                        lastModified: Date.now(),
+                                        minimumWeight: 0.0001,
+                                        image: require('fs').readFileSync(uploadDir + '/' + file.replace('csv', 'png')),
+                                        cardtype: type[0]._id
+                                    });
+                                dynacard.save( (err) => {
+                                    if (err) {
+                                        return next(err);
+                                    }
+                                    //res.redirect('/'); // todo: where should it be?
+                                    var q = 'what to do';
+                                    fs.renameSync(uploadDir + '/' + file, processedDir + '/' + file);
+                                    fs.renameSync(uploadDir + '/' + file.replace('csv', 'png'), processedDir + '/' + file.replace('csv', 'png'));
+                                })
+                               /*
+                               var myId = dynacard._id;
+                               Dynacard.update (
+                                   {_id: myId},
+                                   {upsert: true},
+                                   function (err) {
+                                       assert.ifError(err);
+                                       console.log('done');
+                                       process.exit(0);
+                                   }
+                               );
+                               */
                             })
-                }).catch ((err) => {
+                })
+                /*
+                .then ((file) => {
+                    fs.renameSync(uploadDir + '/' + file, processedDir + '/' + file);
+                    //fs.renameSync(uploadDir + '/' + file.replace('csv', 'png'), processedDir + '/' + file.replace('csv', 'png'));
+                })
+                */
+                .catch ((err) => {
                     console.log(err.toString());
                     //req.redirect('/'); with some error message?
                 });       

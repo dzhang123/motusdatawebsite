@@ -69,13 +69,16 @@ function createCardtypes(cb) {
               cardtypeCreate('worn standing', 'Worn Standing', callback);
             },
             function(callback) {
-              cardtypeCreate('worn or split', 'Worn Or Split', callback);
+              cardtypeCreate('worn or', 'Worn Or Split', callback);
             },
             function(callback) {
               cardtypeCreate('fluid friction', 'Fluid Friction', callback);
             },
             function(callback) {
               cardtypeCreate('drag friction', 'Drag Friction', callback);
+            },
+            function(callback) {
+              cardtypeCreate('flowing well', 'Flowing Well', callback);
             },
             function(callback) {
               cardtypeCreate('undetermined', 'Undetermined', callback);
