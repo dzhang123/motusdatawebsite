@@ -18,31 +18,7 @@ var async = require('async');
 
 // Note: whats next? read promise and async from this site, https://developers.google.com/web/fundamentals/primers/promises
 exports.index = (req, res, next) => {
-    //res.send('To Be Implemented');
-        // find the upload directory/path
-    
-    
     res.render('index', {title: 'Dynacard List'});
-
-
-    /*
-    Dynacard.find({}, 'name evaluatedCardType').populate('evaludatedCardType')
-            .exec(function(err, list_dynacards) {
-                if (err) { 
-                    return next(err);
-                }
-                res.render('index', {title: 'Dynacard List', dynacard_list: list_dynacards});
-            });
-          */  
-/*
-CardType.find().exec (function (err, list_cardtypes) {
-        if (err) 
-        {
-            return next (err);
-        }
-        res.render('index', {title: 'Card Type List', cardtype_list: list_cardtypes});
-    });
-    */
 };
 
 exports.dynacard_create_get = (req, res) => {
@@ -50,49 +26,95 @@ exports.dynacard_create_get = (req, res) => {
 };
 
 // POST request to upload dynacard files, csv files
-
 exports.dynacard_upload_post = (req, res, next) => {
     var form = new formidable.IncomingForm(), 
         files = [],
         fields = [];
 
     form.uploadDir = req.rootPath + '/public/uploads';
-
     form.on ('field', function (field, value) {
         fields.push([field, value]);
     });
-
     form.on ('file', (field, file) => {
         console.log(file.name);
         // rename is necessary, otherwise it is magic characters in the file name
         fs.rename(file.path, form.uploadDir + '/' + file.name, function (err) {
             console.log(err);
         });
-
         files.push([field, file]);
     })
-
     form.on ('end', () => {
         console.log('done');
         processUploadedFiles(req, res, next);
-
-        /*
-        var processPromise = new Promise ( (resolve, reject) => {
-            processUploadedFiles(req, res, next);
-            resolve(true);
-        });
-        processPromise.then ( (resolved) => {
-            res.redirect('/');
-        }).catch ((err) => {
-            console.log ("something wrong, to be impl");
-        });
-        */
-        res.redirect('/'); // what is the right actions afterwards?
     });
 
     form.parse(req);
 };
 
+function createImage (req, csvFile) {
+    var uploadDir = req.rootPath + '/public/uploads';
+    var processedDir = req.rootPath + '/public/processed';
+    return new Promise ( (resolve, reject) => {
+        const spawn = require('child_process').spawn;
+        const runPy = spawn('python', ['./csvToImage.py', csvFilePath]);
+        resolve(csvFilePath);
+    });
+};
+function evalCsv (csvFilePath) {
+    return new Promise ((resolve, reject) => {
+        const spawn = require('child_process').spawn;
+        const runPy = spawn('python', ['./evaluateCsv.py', csvFilePath, 0.001]);
+        runPy.stdout.on('data', (data) => {
+            console.log(data.toString());
+            resolve(data);
+        });
+        runPy.stderr.on('err', (err) => {
+            reject(err);
+        });
+    });
+};
+
+function upsertDB (req, file, imgFile, pumpCondition) {
+    var uploadDir = req.rootPath + '/public/uploads';
+    var processedDir = req.rootPath + '/public/processed';
+    // create the dynacard in mongoodb
+    var pred = pumpCondition.toString().trim();
+    CardType.find({'name' : pred}).limit(1)
+            .exec( (err, type) => {
+                if (err) { return next(err);}
+                // create a Dynacard object with the information above (todo: sanitize the data)
+                var dynacard = new Dynacard (
+                    {
+                        name: file.split('.').shift(),
+                        //filePath: uploadDir + '/' + file,
+                        lastModified: Date.now(),
+                        minimumWeight: 0.0001,
+                        image: require('fs').readFileSync(uploadDir + '/' + imgFile),
+                        cardtype: type[0]._id
+                    });
+                dynacard.save( (err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    //res.redirect('/'); // todo: where should it be?
+                    var q = 'what to do';
+                    fs.renameSync(uploadDir + '/' + file, processedDir + '/' + file);
+                    fs.renameSync(uploadDir + '/' + imgFile, processedDir + '/' + imgFile);
+                })
+               /*
+               var myId = dynacard._id;
+               Dynacard.update (
+                   {_id: myId},
+                   {upsert: true},
+                   function (err) {
+                       assert.ifError(err);
+                       console.log('done');
+                       process.exit(0);
+                   }
+               );
+               */
+            });
+}
 // private function. this is supposed to be called immediately after files are uploaded.
 function processUploadedFiles (req, res, next) {
     // file upload folder
@@ -109,48 +131,60 @@ function processUploadedFiles (req, res, next) {
                 let pyPromise = new Promise( function (resolve, reject) {
                     const spawn = require('child_process').spawn;
                     const runPy = spawn ('python', ['./csvToImage.py', uploadDir + '/' + file]);
-
-                    const predPy = spawn('python', ['./evaluateCsv.py', uploadDir + '/' + file, 0.001]);
-                    predPy.stdout.on('data', function(data) {
-                        console.log(data.toString());
-                        var me = data.toString().trim();
-                        resolve(data);
-                    });
-                    predPy.stderr.on('err', (err) => {
-                        reject(err);
+                    runPy.on('close', (code) => {
+                        if (code === 0)
+                            resolve();
+                        else 
+                            reject(1);
                     });
                 });
-                pyPromise.then( (prediction) => {
-                    // create the dynacard in mongoodb
-                    var pred = prediction.toString().trim();
-                    CardType.find({'name' : pred})
-                            .limit(1)
-                            .exec( (err, type) => {
-                                if (err) {
-                                    return next(err);
-                                }
-                                // find it
-                                //var mytype = type[0].name;
-                                // create a Dynacard object with the information above (todo: sanitize the data)
-                                var dynacard = new Dynacard (
-                                    {
-                                        name: file.split('.').shift(),
-                                        filePath: uploadDir + '/' + file,
-                                        lastModified: Date.now(),
-                                        minimumWeight: 0.0001,
-                                        image: require('fs').readFileSync(uploadDir + '/' + file.replace('csv', 'png')),
-                                        cardtype: type[0]._id
-                                    });
-                                dynacard.save( (err) => {
-                                    if (err) {
-                                        return next(err);
-                                    }
-                                    //res.redirect('/'); // todo: where should it be?
-                                    var q = 'what to do';
+                pyPromise.then(() => {
+                    let py2Promise = new Promise ((resolve, reject) => {
+                        const spawn = require('child_process').spawn;
+                        const predPy = spawn('python', ['./evaluateCsv.py', uploadDir + '/' + file, 0.001]);
+                        predPy.stdout.on('data', function(data) {
+                            console.log(data.toString());
+                            var me = data.toString().trim();
+                            resolve(data);
+                        });
+                        predPy.stderr.on('err', (err) => {
+                            reject(err);
+                        });
+                    });
+                    py2Promise.then((data) => {
+                        let py3Promise = new Promise ((resolve, reject) => {
+                                let py3Promise = new Promise ((resolve, reject) => {
+                                    let pred = data.toString().trim();
+                                    CardType.find({'name' : pred}).limit(1)
+                                            .exec ( (err, type) => {
+                                                if (err) { return next(err);}
+                                                var dynacard = new Dynacard( {
+                                                    name: file.split('.').shift(),
+                                                    filePath: uploadDir + '/' + file,
+                                                    lastModified: Date.now(),
+                                                    minimumWeight: 0.0001,
+                                                    image: require('fs').readFileSync(uploadDir + '/' + file.replace('csv', 'png')),
+                                                    cardtype: type[0]._id
+                                                });
+                                                dynacard.save( (err) => {
+                                                    if (err) { reject(err); }
+                                                    resolve();
+                                                });
+                                            });
+                                });
+                                py3Promise.then(() => {
+                                    // rename/move files.
                                     fs.renameSync(uploadDir + '/' + file, processedDir + '/' + file);
                                     fs.renameSync(uploadDir + '/' + file.replace('csv', 'png'), processedDir + '/' + file.replace('csv', 'png'));
-                                })
-                               /*
+                                    req.redirect('/');
+                                }).catch (() => {
+
+                                });
+                        });
+
+                    });
+                }).catch ().fin;
+                /*
                                var myId = dynacard._id;
                                Dynacard.update (
                                    {_id: myId},
@@ -161,19 +195,8 @@ function processUploadedFiles (req, res, next) {
                                        process.exit(0);
                                    }
                                );
-                               */
-                            })
-                })
-                /*
-                .then ((file) => {
-                    fs.renameSync(uploadDir + '/' + file, processedDir + '/' + file);
-                    //fs.renameSync(uploadDir + '/' + file.replace('csv', 'png'), processedDir + '/' + file.replace('csv', 'png'));
-                })
                 */
-                .catch ((err) => {
-                    console.log(err.toString());
-                    //req.redirect('/'); with some error message?
-                });       
+               
             }
         }
     });
