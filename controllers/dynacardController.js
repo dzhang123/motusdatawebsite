@@ -45,35 +45,132 @@ exports.dynacard_upload_post = (req, res, next) => {
     })
     form.on ('end', () => {
         console.log('done');
-        processUploadedFiles(req, res, next);
+        //processUploadedFiles(req, res, next);
+        processUploadLoadedFilesAsync(req, res, next);
     });
 
     form.parse(req);
     res.redirect('/');
 };
 
-function updateDBAsync (req, res, file, pumpState) {
-    return new Promise ((resolve, reject) => {
-        let state = pumpState.toString().trim();
-        CardType.find({'name': state}).limit(1) // CardType must exist
-        .exec((err, types) => {
-            if (err) { reject("Error: failed to query CardType");}
-            if (types.length === 0) {
-                // not allowed
-                reject(new Error("Error: Pump State not recognizable."));
+function generateImage(uploadDir, file) {
+    return new Promise((resolve, reject) => {
+        const spawn = require('child_process').spawn;
+        const runPy = spawn('python', ['./csvToImage.py', uploadDir + '/' + file]);
+        runPy.on('close', (code) => {
+            if (code === 0)
+                resolve(file);
+            else {
+                let err = new Error('Error: Failed to generate image from CSV ${file}');
+                reject(err);
             }
-            resolve(types[0]);
         })
     });
 };
+function evaluatePump(uploadDir, file) {
+    return new Promise((resolve, reject) => {
+        const spawn = require('child_process').spawn;
+        const runPy = spawn('python', ['./evaluateCsv.py', uploadDir + '/' + file, 0.0001]);
+        runPy.stdout.on('data', (data) => {
+            resolve(data.toString().trim());
+        });
+        runPy.stderr.on('err', (err) => {
+            reject(err);
+        });
+    });
+};
+
+function updateDB(pumpState, uploadDir, file) {
+    return new Promise ((resolve, reject) => {
+        let state = pumpState.toString().trim();
+        CardType.find({'name': state}).limit(1)
+        .exec( (err, types) => {
+            if (err) {
+                let error = new Error('Error: No Card Type found, ${err}');
+                reject(error);
+            }
+            resolve(types[0]._id);
+        });
+    }).then (cardtype_id => {
+        Dynacard.find({'name': file.split('.').shift()}).limit(1)
+        .exec ((err, cards) => {
+            let dynacard;
+            if (cards.length === 0) {
+                dynacard = new Dynacard ({
+                    name: file.split('.').shift(),
+                    filePath: uploadDir + '/' + file,
+                    lastModified: Date.now(),
+                    minimumWeight: 0.0001,
+                    image: require('fs').readFileSync(uploadDir + '/' + file.replace('.csv', '.png')),
+                    cardtype: cardtype_id
+                });
+            }
+            else {
+                dynacard = new Dynacard ({
+                    _id: cards[0]._id,
+                    name: file.split('.').shift(),
+                    filePath: uploadDir + '/' + file,
+                    lastModified: Date.now(),
+                    minimumWeight: 0.0001,
+                    image: require('fs').readFileSync(uploadDir + '/' + file.replace('.csv', '.png')),
+                    cardtype: cardtype_id
+                });
+            };
+            if (dynacard) {
+                dynacard.save( (err) => {
+                    if (err) {
+                        let error = new Error('Error: Failed to save dynacard, ${err}');
+                        reject(error);
+                    }
+                    resolve(cardtype_id);
+                })
+            } else {
+                let error = new Error('Error: Failed to create dyancard');
+                reject(error);
+            };
+        });
+    });
+};
+
+function moveProcessedFile(uploadDir, processedDir, file, cardtype_id) {
+    return new Promise ((resolve, reject) => {
+        // rename/move files.
+        fs.renameSync(uploadDir + '/' + file, processedDir + '/' + file);
+        fs.renameSync(uploadDir + '/' + file.replace('.csv', '.png'), processedDir + '/' + file.replace('.csv', '.png'));
+        resolve();
+    });
+};
+
+async function processUploadLoadedFilesAsync(req, res, next) {
+    let uploadDir = req.rootPath + '/public/uploads';
+    let processedDir = req.rootPath + '/public/processed';
+
+    var files = fs.readdirSync(uploadDir);
+    files = files.filter(file => fs.statSync(uploadDir + '/' + file).isFile()
+                        && file.endsWith('.csv'));
+    if (files) {
+        files.map(async file => {
+            try {
+                let myfile = await generateImage(uploadDir, file);
+                let mystate = await evaluatePump(uploadDir, myfile);
+                let mycardtype_id = await updateDB(mystate, uploadDir, myfile);
+                await moveProcessedFile(uploadDir, processedDir, myfile, mycardtype_id);
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    };
+};
+
 // private function. this is supposed to be called immediately after files are uploaded.
-function processUploadedFiles (req, res, next) {
+function processUploadedFiles1 (req, res, next) {
     // file upload folder
     var uploadDir = req.rootPath + '/public/uploads';
     // move uploaded files to this folder once they are processed.
     var processedDir = req.rootPath + '/public/processed';
 
     var files = fs.readdirSync(uploadDir);
+    files = files.filter(file => fs.statSync(uploadDir + '/' + file).isFile() && file.endsWith('.csv'));
     if (files) {
         files.forEach(file => {
         let fileStat = fs.statSync(uploadDir + '/' + file).isDirectory();
