@@ -51,6 +51,7 @@ exports.dynacard_upload_post = (req, res, next) => {
     res.redirect('/');
 };
 
+// generate the image and return the original file
 function generateImage(uploadDir, file) {
     return new Promise((resolve, reject) => {
         const spawn = require('child_process').spawn;
@@ -65,6 +66,8 @@ function generateImage(uploadDir, file) {
         })
     });
 };
+
+// evaluate the pump state and return the state
 function evaluatePump(uploadDir, file) {
     return new Promise((resolve, reject) => {
         const spawn = require('child_process').spawn;
@@ -78,18 +81,23 @@ function evaluatePump(uploadDir, file) {
     });
 };
 
-function updateDB(pumpState, uploadDir, file) {
+// return CardType id predefined in the db
+function searchDB (pumpState) {
     return new Promise ((resolve, reject) => {
         let state = pumpState.toString().trim();
         CardType.find({'name': state}).limit(1)
-        .exec( (err, types) => {
+        .exec ( (err, types) => {
             if (err) {
-                let error = new Error('Error: No Card Type found, ${err}');
+                let error = new Error('Error: No Card Type found in the catalog, ${err}');
                 reject(error);
             }
             resolve(types[0]._id);
         });
-    }).then (cardtype_id => {
+    });
+}
+
+function updateDB(cardtype_id, uploadDir, file) {
+    return new Promise ((resolve, reject) => {
         Dynacard.find({'name': file.split('.').shift()}).limit(1)
         .exec ((err, cards) => {
             let dynacard;
@@ -102,6 +110,13 @@ function updateDB(pumpState, uploadDir, file) {
                     image: require('fs').readFileSync(uploadDir + '/' + file.replace('.csv', '.png')),
                     cardtype: cardtype_id
                 });
+                dynacard.save( (err) => {
+                    if (err) {
+                        let error = new Error('Error: Failed to save dynacard, ${err}');
+                        reject(error);
+                    }
+                    resolve(dynacard._id);
+                });
             }
             else {
                 dynacard = new Dynacard ({
@@ -113,24 +128,20 @@ function updateDB(pumpState, uploadDir, file) {
                     image: require('fs').readFileSync(uploadDir + '/' + file.replace('.csv', '.png')),
                     cardtype: cardtype_id
                 });
-            };
-            if (dynacard) {
-                dynacard.save( (err) => {
+
+                Dynacard.findByIdAndUpdate(cards[0]._id, dynacard, {}, function (err, theDynacard) {
                     if (err) {
                         let error = new Error('Error: Failed to save dynacard, ${err}');
                         reject(error);
                     }
-                    resolve(cardtype_id);
-                })
-            } else {
-                let error = new Error('Error: Failed to create dyancard');
-                reject(error);
+                    resolve(dynacard._id);
+                });
             };
         });
     });
-};
+}
 
-function moveProcessedFile(uploadDir, processedDir, file, cardtype_id) {
+function moveProcessedFile(uploadDir, processedDir, file) {
     return new Promise ((resolve, reject) => {
         // rename/move files.
         fs.renameSync(uploadDir + '/' + file, processedDir + '/' + file);
@@ -146,13 +157,14 @@ async function processUploadLoadedFilesAsync(req, res, next) {
     var files = fs.readdirSync(uploadDir);
     files = files.filter(file => fs.statSync(uploadDir + '/' + file).isFile()
                         && file.endsWith('.csv'));
-    if (files) {
+    if (files && files.length > 0 ) {
         files.map(async file => {
             try {
                 let myfile = await generateImage(uploadDir, file);
                 let mystate = await evaluatePump(uploadDir, myfile);
-                let mycardtype_id = await updateDB(mystate, uploadDir, myfile);
-                await moveProcessedFile(uploadDir, processedDir, myfile, mycardtype_id);
+                let mycardtype_id = await searchDB(mystate);
+                let mydynacard_id = await updateDB(mycardtype_id, uploadDir, myfile);
+                await moveProcessedFile(uploadDir, processedDir, myfile);
             } catch (error) {
                 console.log(error);
             }
