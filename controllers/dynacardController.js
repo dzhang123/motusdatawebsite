@@ -12,11 +12,19 @@ const { sanitizedBody } = require('express-validator/filter');
 
 var async = require('async');
 
+function showImage(obj) {
+    return URL.createObjectURL(obj);
+}
 // GET request.
 // 1. if any csv file exists in /public/uploads/ folder, call python to generate png (for now) to display and then csv file and upload/store the zip file in mongoodb. Once stored, delete the csv file
 // 2. if none, retrieve csv files from mongoodb, call python to create png file to display.
-exports.index = (req, res, next) => {
-    res.render('index', {title: 'Dynacard List'});
+exports.index = (req, res) => {
+    //res.render('index', {title: 'Dynacard List'});
+    Dynacard.find({})
+    .populate('cardtype')
+    .exec((err, list_cards) => {
+        res.render('index', {title: 'Dyncards Home', error: err, dynacards: list_cards});
+    });
 };
 
 exports.dynacard_create_get = (req, res) => {
