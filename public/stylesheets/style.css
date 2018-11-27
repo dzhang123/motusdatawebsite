@@ -1,7 +1,7 @@
 /* General */
 
 html {
-  font-family: 'Raleway', sans-serif;
+  font-family: Georgia, serif;
   /*background-color: yellow;*/
   font-size: 10px;
 }
@@ -14,14 +14,14 @@ body {
 /* Typography */
 
 h1, h2 {
-  font-family: 'Cherry Swash', cursive;
+  font-family: 'Cherry Swash', serif;
   margin: 0;
   text-align: center;
 }
 
 h1 {
   font-size: 5rem;
-  background: url(icons/bean_can.png) no-repeat 20% center, url(icons/bean_can.png) no-repeat 80% center;
+  /*background: url(icons/bean_can.png) no-repeat 20% center, url(icons/bean_can.png) no-repeat 80% center;*/
   background-size: 48px 48px;
 }
 
@@ -147,6 +147,7 @@ section img {
 }
 
 section p {
+  font-size: 0.9rem;
   color: yellow;
   background: black;
   width: 50px;
@@ -161,6 +162,7 @@ section p {
   z-index: 2000;
 }
 
+/*
 .vegetables {
   background: black url(icons/vegetable.png) no-repeat 2px 2px;
   background-size: 24px 24px;
@@ -175,3 +177,4 @@ section p {
   background: black url(icons/soup.png) no-repeat 2px 2px;
   background-size: 24px 24px;
 }
+*/

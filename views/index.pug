@@ -3,23 +3,8 @@ extends layout
 block content
     each dynacard in dynacards
         section(class=dynacard.name)
-            h2
-                #{dynacard.name}
+            h2 #{dynacard.name}.csv
             p #{dynacard.cardtype.name}
-            img(src='/processed/bent_barrel.png', alt=dynacard.name)
-            
-            //script.
-            //-
-                fetch('/public/processed/bent_barrel.png').then(function(response) {
-                    if (response.ok) {
-                        response.blob().then(function(blob) {
-                            var objectURL = URL.createObjectURL(blob);
-                            img(src=objectURL);
-                            var me='test';
-                        })
-                    }
-                })
-            -//
-             //   img(src=dynacard.filePath.replace('.csv', '.png'), alt=dynacard.name)
+            img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)
     else
         p No Dynacards to Display!
