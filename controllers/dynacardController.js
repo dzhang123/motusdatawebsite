@@ -59,6 +59,28 @@ exports.dynacard_upload_post = (req, res, next) => {
     res.redirect('/');
 };
 
+async function processUploadLoadedFilesAsync(req, res, next) {
+    let uploadDir = req.rootPath + '/public/uploads';
+    let processedDir = req.rootPath + '/public/processed';
+
+    var files = fs.readdirSync(uploadDir);
+    files = files.filter(file => fs.statSync(uploadDir + '/' + file).isFile()
+        && file.endsWith('.csv'));
+    if (files && files.length > 0) {
+        files.map(async file => {
+            try {
+                let myfile = await generateImage(uploadDir, file);
+                let mystate = await evaluatePump(uploadDir, myfile);
+                let mycardtype_id = await searchDB(mystate);
+                let mydynacard_id = await updateDB(mycardtype_id, uploadDir, myfile);
+                await moveProcessedFile(uploadDir, processedDir, myfile);
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    };
+};
+
 // generate the image and return the original file
 function generateImage(uploadDir, file) {
     return new Promise((resolve, reject) => {
@@ -158,27 +180,6 @@ function moveProcessedFile(uploadDir, processedDir, file) {
     });
 };
 
-async function processUploadLoadedFilesAsync(req, res, next) {
-    let uploadDir = req.rootPath + '/public/uploads';
-    let processedDir = req.rootPath + '/public/processed';
-
-    var files = fs.readdirSync(uploadDir);
-    files = files.filter(file => fs.statSync(uploadDir + '/' + file).isFile()
-                        && file.endsWith('.csv'));
-    if (files && files.length > 0 ) {
-        files.map(async file => {
-            try {
-                let myfile = await generateImage(uploadDir, file);
-                let mystate = await evaluatePump(uploadDir, myfile);
-                let mycardtype_id = await searchDB(mystate);
-                let mydynacard_id = await updateDB(mycardtype_id, uploadDir, myfile);
-                await moveProcessedFile(uploadDir, processedDir, myfile);
-            } catch (error) {
-                console.log(error);
-            }
-        });
-    };
-};
 
 // private function. this is supposed to be called immediately after files are uploaded.
 function processUploadedFiles1 (req, res, next) {
