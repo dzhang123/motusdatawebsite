@@ -7,7 +7,8 @@ html {
 }
 
 body {
-  width: 800px;
+  /*width: 800px;*/
+  width: 50%;
   margin: 0 auto;
 }
 
@@ -150,7 +151,7 @@ section p {
   font-size: 0.9rem;
   color: yellow;
   background: black;
-  width: 50px;
+  width: 80px;
   height: 50px;
   line-height: 50px;
   text-align: center;
