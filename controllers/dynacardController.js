@@ -85,7 +85,7 @@ async function processUploadLoadedFilesAsync(req, res, next) {
 function generateImage(uploadDir, file) {
     return new Promise((resolve, reject) => {
         const spawn = require('child_process').spawn;
-        const runPy = spawn('python', ['./csvToImage.py', uploadDir + '/' + file]);
+        const runPy = spawn('python', ['./csvToImage.py', uploadDir + '/' + file]); //, {windowsHide:true, shell:false, detached:true, shell: false});
         runPy.on('close', (code) => {
             if (code === 0)
                 resolve(file);
