@@ -73,11 +73,11 @@ footer {
 }
 
 aside {
-  flex: 3;
+  flex: 2;
 }
 
 main {
-  flex: 7;
+  flex: 8;
 }
 
 /* Form styling */
@@ -144,7 +144,7 @@ section {
   margin: 5px;
   background-color: black;
   position: relative;
-  height: 180px;
+  height: 190px;
 }
 
 section img {
