@@ -2,7 +2,6 @@
 
 html {
   font-family: Georgia, serif;
-  /*background-color: yellow;*/
   font-size: 10px;
 }
 
@@ -13,7 +12,6 @@ body {
 }
 
 /* Typography */
-
 h1, h2 {
   font-family: 'Cherry Swash', serif;
   margin: 0;
@@ -108,11 +106,20 @@ select, input, button {
 
 input {
   background: black;
-  box-shadow: inset 1px 1px 1px white;
+  /*box-shadow: inset 1px 1px 1px white;*/
   color: yellow;
   border: none;
   padding: 5px;
   width: 201.5px;
+}
+
+input[type="checkbox"] {
+  font-size: 2rem;
+  /*width: 160px;*/
+  position: absolute;
+  left: 2%;
+  z-index: 3000;
+  padding-top: 0.3rem;
 }
 
 button {
@@ -137,7 +144,7 @@ section {
   margin: 5px;
   background-color: black;
   position: relative;
-  height: 215px;
+  height: 180px;
 }
 
 section img {
@@ -152,14 +159,14 @@ section p {
   color: yellow;
   background: black;
   width: 80px;
-  height: 50px;
-  line-height: 50px;
+  height: 30px;
+  line-height: 30px;
   text-align: center;
   border-radius: 50%;
-  box-shadow: 2px 2px 1px yellow;
+  /*box-shadow: 2px 2px 1px yellow;*/
   position: absolute;
-  right: 10px;
-  bottom: -6px;
+  right: 5px;
+  bottom: -10px;
   z-index: 2000;
 }
 

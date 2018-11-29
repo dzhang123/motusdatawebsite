@@ -3,6 +3,7 @@ extends layout
 block content
     each dynacard in dynacards
         section(class=dynacard.name)
+            input(type='checkbox' id='run-me') 
             h2 #{dynacard.name}.csv
             p #{dynacard.cardtype.name}
             img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)
