@@ -29,7 +29,7 @@ html(lang='en')
               button.btn.btn-primary(type='submit') Filter Search Results
           div
             form(method='POST' action='/catalog/run')
-              button.btn.btn-primary(type='submit') Run Analysis
+              button.btn.btn-primary.disabled(type='submit' id='run-button') Run Analysis
         main
           block content
       footer

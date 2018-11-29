@@ -121,7 +121,6 @@ input[type="checkbox"] {
   z-index: 3000;
   padding-top: 0.3rem;
 }
-
 button {
   background: black;
   color: yellow;
@@ -144,7 +143,7 @@ section {
   margin: 5px;
   background-color: black;
   position: relative;
-  height: 190px;
+  height: 225px;
 }
 
 section img {
@@ -166,7 +165,7 @@ section p {
   /*box-shadow: 2px 2px 1px yellow;*/
   position: absolute;
   right: 5px;
-  bottom: -10px;
+  bottom: -6px;
   z-index: 2000;
 }
 
