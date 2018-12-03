@@ -48,6 +48,20 @@ html(lang='en')
             return false;
           });
         });
+
+
+        var checkbox = document.querySelector("input#run-me");
+        checkbox.addEventListener ('change', function() {
+          if (this.checked) {
+            var runbutton = document.getElementById('run-button');
+            runbutton.style.visibility = 'visible';
+          }
+          else {
+
+          }
+        });
+
+
         // pre-submit function callback
         function showRequest(formData, jgForm, options) {
           alert('Uploading is starting.');
