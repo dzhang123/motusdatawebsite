@@ -123,22 +123,10 @@ input[type="checkbox"] {
 }
 
 
-
 #run-button {
   cursor: none;
   visibility: collapse;
 }
-/*
-input[type="checkvox"]:checked ~ #run-button {
-  cursor: default;
-  visibility: visible;
-}
-
-#run-me:checked ~ #run-button {
-  cursor: default;
-  visibility: visible;
-}
-*/
 
 button {
   background: black;

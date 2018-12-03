@@ -50,16 +50,29 @@ html(lang='en')
         });
 
 
-        var checkbox = document.querySelector("input#run-me");
-        checkbox.addEventListener ('change', function() {
-          if (this.checked) {
-            var runbutton = document.getElementById('run-button');
-            runbutton.style.visibility = 'visible';
-          }
-          else {
-
-          }
-        });
+        var cardselectors = document.querySelectorAll("input.card-selector");
+        cardselectors.forEach( function (selector) {
+            selector.addEventListener ('change', function() {
+              if (this.checked) {
+                var runbutton = document.getElementById('run-button');
+                runbutton.style.visibility = 'visible';
+              }
+              else {
+                var checkedSelector=false;
+                cardselectors.forEach(function (aSelector) {
+                  if (aSelector.checked) {
+                    checkedSelector = true;
+                    //break;
+                  }
+                });
+                if (! checkedSelector) {
+                  let runbutton = document.getElementById('run-button');
+                  runbutton.style.visibility = 'collapse';
+                }
+              }
+            });
+        })
+        
 
 
         // pre-submit function callback
