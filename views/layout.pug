@@ -49,32 +49,6 @@ html(lang='en')
           });
         });
 
-
-        var cardselectors = document.querySelectorAll("input.card-selector");
-        cardselectors.forEach( function (selector) {
-            selector.addEventListener ('change', function() {
-              if (this.checked) {
-                var runbutton = document.getElementById('run-button');
-                runbutton.style.visibility = 'visible';
-              }
-              else {
-                var checkedSelector=false;
-                cardselectors.forEach(function (aSelector) {
-                  if (aSelector.checked) {
-                    checkedSelector = true;
-                    //break;
-                  }
-                });
-                if (! checkedSelector) {
-                  let runbutton = document.getElementById('run-button');
-                  runbutton.style.visibility = 'collapse';
-                }
-              }
-            });
-        })
-        
-
-
         // pre-submit function callback
         function showRequest(formData, jgForm, options) {
           alert('Uploading is starting.');
@@ -87,4 +61,6 @@ html(lang='en')
         function createObjectURL(blob) {
           return URL.createObjectURL(blob);
         }
+      
+      block customscript
 

@@ -9,3 +9,28 @@ block content
             img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)
     else
         p No Dynacards to Display!
+        
+block customscript
+    script.
+        var cardselectors = document.querySelectorAll("input.card-selector");
+        cardselectors.forEach( function (selector) {
+            selector.addEventListener ('change', function() {
+              if (this.checked) {
+                var runbutton = document.getElementById('run-button');
+                runbutton.style.visibility = 'visible';
+              }
+              else {
+                var checkedSelector=false;
+                cardselectors.forEach(function (aSelector) {
+                  if (aSelector.checked) {
+                    checkedSelector = true;
+                    //break;
+                  }
+                });
+                if (! checkedSelector) {
+                  let runbutton = document.getElementById('run-button');
+                  runbutton.style.visibility = 'collapse';
+                }
+              }
+            });
+        })
