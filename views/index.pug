@@ -6,7 +6,8 @@ block content
             input(type='checkbox' class='card-selector') 
             h2 #{dynacard.name}.csv
             p #{dynacard.cardtype.name}
-            img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)
+            a(href=dynacard.url ondblclick='location=this.href' onclick='return false')
+              img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name, class='card-img', id=dynacard._id)
     else
         p No Dynacards to Display!
         
@@ -34,3 +35,11 @@ block customscript
               }
             });
         })
+
+        var cardimages = document.querySelectorAll("img.card-img");
+        //cardimages.forEach( (image) => {
+        //  image.addEventListener('dblclick', (e) => {
+        //    alert("double click event on image" + e.target.id);
+        //  });
+        //});
+  

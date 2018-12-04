@@ -12,9 +12,6 @@ const { sanitizedBody } = require('express-validator/filter');
 
 var async = require('async');
 
-function showImage(obj) {
-    return URL.createObjectURL(obj);
-}
 // GET request.
 // 1. if any csv file exists in /public/uploads/ folder, call python to generate png (for now) to display and then csv file and upload/store the zip file in mongoodb. Once stored, delete the csv file
 // 2. if none, retrieve csv files from mongoodb, call python to create png file to display.
@@ -181,94 +178,16 @@ function moveProcessedFile(uploadDir, processedDir, file) {
 };
 
 
-// private function. this is supposed to be called immediately after files are uploaded.
-function processUploadedFiles1 (req, res, next) {
-    // file upload folder
-    var uploadDir = req.rootPath + '/public/uploads';
-    // move uploaded files to this folder once they are processed.
-    var processedDir = req.rootPath + '/public/processed';
-
-    var files = fs.readdirSync(uploadDir);
-    files = files.filter(file => fs.statSync(uploadDir + '/' + file).isFile() && file.endsWith('.csv'));
-    if (files) {
-        files.forEach(file => {
-        let fileStat = fs.statSync(uploadDir + '/' + file).isDirectory();
-        if (!fileStat) {
-            if (file.split('.').pop() === 'csv') {
-                let pyPromise = new Promise( function (resolve, reject) {
-                    const spawn = require('child_process').spawn;
-                    const runPy = spawn ('python', ['./csvToImage.py', uploadDir + '/' + file]);
-                    runPy.on('close', (code) => {
-                        if (code === 0)
-                            resolve();
-                        else 
-                            reject(1);
-                    });
-                });
-                pyPromise.then(() => {
-                    let py2Promise = new Promise ((resolve, reject) => {
-                        const spawn = require('child_process').spawn;
-                        const predPy = spawn('python', ['./evaluateCsv.py', uploadDir + '/' + file, 0.001]);
-                        predPy.stdout.on('data', function(data) {
-                            console.log('---' + data.toString());
-                            var me = data.toString().trim();
-                            resolve(data);
-                        });
-                        predPy.stderr.on('err', (err) => {
-                            reject(err);
-                        });
-                    });
-                    py2Promise.then((data) => {
-                            let py3Promise = new Promise ((resolve, reject) => {
-                                let pred = data.toString().trim();
-                                CardType.find({'name' : pred}).limit(1)
-                                        .exec ( (err, type) => {
-                                            if (err) { return next(err);}
-                                            Dynacard.find({'name': file.split('.').shift()}).limit(1)
-                                                    .exec( (err, card) => {
-                                                        var dynacard;
-                                                        if (card.length === 0) {
-                                                            dynacard = new Dynacard( {
-                                                                name: file.split('.').shift(),
-                                                                filePath: uploadDir + '/' + file,
-                                                                lastModified: Date.now(),
-                                                                minimumWeight: 0.0001,
-                                                                image: require('fs').readFileSync(uploadDir + '/' + file.replace('csv', 'png')),
-                                                                cardtype: type[0]._id
-                                                            });
-                                                        } else {
-                                                            dynacard = new Dynacard( {
-                                                                _id: card[0]._id,
-                                                                name: file.split('.').shift(),
-                                                                filePath: uploadDir + '/' + file,
-                                                                lastModified: Date.now(),
-                                                                minimumWeight: 0.0001,
-                                                                image: require('fs').readFileSync(uploadDir + '/' + file.replace('csv', 'png')),
-                                                                cardtype: type[0]._id
-                                                        })};
-                                                        dynacard.save( (err) => {
-                                                            if (err) { reject(err); }
-                                                            resolve();
-                                                        })
-                                                    });
-                                        
-                                        });
-                                py3Promise.then(() => {
-                                    // rename/move files.
-                                    fs.renameSync(uploadDir + '/' + file, processedDir + '/' + file);
-                                    fs.renameSync(uploadDir + '/' + file.replace('csv', 'png'), processedDir + '/' + file.replace('csv', 'png'));
-                                    req.redirect('/');
-                                }).catch (() => {
-
-                                });
-                        });
-                    });
-                });
-            }
+exports.dynacard_detail = (req, res, next) => {
+    Dynacard.findById(req.params.id, (err, card) => {
+        if (err) { return next(err);}
+        if (card == null ) {
+            // no results
+            let err = new Error('Dynacard not found');
+            err.status = 404;
+            return next(err);
         }
-    });
-    };
-}
-exports.dynacard_upload_get = (req,res, next) => {
-    req.redirect('/');
+        // Success
+        res.render('dynacard_detail', {title: 'Dynacard Detail', dynacard: card});
+    })
 }

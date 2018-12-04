@@ -16,6 +16,9 @@ router.post('/upload', dynacard_controller.dynacard_upload_post);
 // GET request for creating a new Dynacard. NOTE This must come before routes that display Dynacard (uses id).
 router.get('/dynacard/create', dynacard_controller.dynacard_create_get);
 
+// GET request for one card.
+router.get('/dynacard/:id', dynacard_controller.dynacard_detail);
+
 /*
 // POST request for creating Dyancards.
 router.post('/dynacard/create', dynacard_controller.dynacard_create_post);
@@ -32,8 +35,7 @@ router.get('/dynacard/:id/update', dynacard_controller.dynacard_update_get);
 // POST request to update a Dynacard.
 router.post('/dynacard/:id/update', dynacard_controller.dynacard_update_post);
 
-// GET request for one card.
-router.get('/dynacard/:id', dynacard_controller.dynacard_detail);
+
 
 // Get request for list of all Dynacards.
 router.get('/dynacards', dynacard_controller.dynacard_list);
