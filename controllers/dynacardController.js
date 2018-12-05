@@ -190,4 +190,31 @@ exports.dynacard_detail = (req, res, next) => {
         // Success
         res.render('dynacard_detail', {title: 'Dynacard Detail', dynacard: card});
     })
+};
+
+exports.dynacard_delete_get = (req, res, next) => {
+    Dynacard.findById(req.params.id)
+    .populate('cardtype')
+    .exec ( (err, card) => {
+        if (err) {
+            return next(err);
+        }
+        if (card == null) {
+            // no results
+            let err = new Error('Dynacard not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Success
+        res.render('dynacard_delete', {
+            title: 'Delete Dynacard',
+            dynacard: card
+        });
+    });
+};
+exports.dynacard_delete_post = (req, res, next) => {
+    Dynacard.findByIdAndRemove(req.body.id, function deleteCard(err) {
+        if (err)  {  return next(err); }
+        res.redirect('/catalog');
+    })
 }

@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    section(class=dynacard.name)
+        h2 #{dynacard.name}.csv
+        p #{dynacard.cardtype.name}
+        img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)
+
+    p Do you really want to delete this Card?
+    form(method='POST' action='')
+        div.form-group
+            input#id.form-control(type='hidden', name='id', required='true', value=dynacard._id)
+        button(type='submit') Delete
