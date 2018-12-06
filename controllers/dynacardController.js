@@ -179,7 +179,9 @@ function moveProcessedFile(uploadDir, processedDir, file) {
 
 
 exports.dynacard_detail = (req, res, next) => {
-    Dynacard.findById(req.params.id, (err, card) => {
+    Dynacard.findById(req.params.id)
+    .populate('cardtype')
+    .exec((err, card) => {
         if (err) { return next(err);}
         if (card == null ) {
             // no results

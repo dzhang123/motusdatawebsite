@@ -7,9 +7,10 @@ block content
         p #{dynacard.cardtype.name}
         img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)
         
-       
     hr
     p 
-        a(href=dynacard.url +'/delete') Delete Dynacard
+        a(href=dynacard.url +'/delete') 
+            button.btn.btn-secondary(name='delete') Delete Dynacard
     p
-        a(href=dynacard.url + '/update') Update Dynacard
+        a(href=dynacard.url + '/update') 
+            button.btn.btn-secondary(name='update') Update Dynacard
