@@ -6,7 +6,10 @@ block content
         h2 #{dynacard.name}.csv
         p #{dynacard.cardtype.name}
         img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)
-    
-        hr
+        
+       
+    hr
     p 
         a(href=dynacard.url +'/delete') Delete Dynacard
+    p
+        a(href=dynacard.url + '/update') Update Dynacard
