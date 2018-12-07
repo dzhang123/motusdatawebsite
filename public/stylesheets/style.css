@@ -144,13 +144,13 @@ section input[type="checkbox"] {
   /*font-size: 2rem;*/
   /*width: 160px;*/
   position: absolute;
-  left: 25px;
+  left: 45px;
   top: 5px;
   z-index: 3000;
 }
 section h2 {
   position: absolute;
-  right: 25px;
+  right: 35px;
   line-height: 0.5rem;
 }
 
