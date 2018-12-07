@@ -219,4 +219,24 @@ exports.dynacard_delete_post = (req, res, next) => {
         if (err)  {  return next(err); }
         res.redirect('/catalog');
     })
-}
+};
+
+exports.dynacard_update_get = (req, res, next) => {
+    Dynacard.findById(req.params.id)
+    .populate('cardtype')
+    .exec ((err, dynacard) => {
+        if (err) { return next(err);}
+        if (dynacard == null) {
+            // no results.
+            let err = new Error('Dynacard not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Success
+        res.render('dynacard_form', { title: 'Update Dynacard', dynacard: dynacard});
+    });
+};
+
+exports.dynacard_update_post = [
+    
+];

@@ -22,6 +22,12 @@ router.get('/dynacard/:id/delete', dynacard_controller.dynacard_delete_get);
 // POST request to delete a Dynacard.
 router.post('/dynacard/:id/delete', dynacard_controller.dynacard_delete_post);
 
+// GET request to update a Dynacard.
+router.get('/dynacard/:id/update', dynacard_controller.dynacard_update_get);
+
+// POST request to update a Dynacard.
+router.post('/dynacard/:id/update', dynacard_controller.dynacard_update_post);
+
 
 /*
 // POST request for creating Dyancards.
@@ -30,11 +36,7 @@ router.post('/dynacard/create', dynacard_controller.dynacard_create_post);
 // GET request for creating a new Dynacard. NOTE This must come before routes that display Dynacard (uses id).
 // router.get('/dynacard/create', dynacard_controller.dynacard_create_get);
 
-// GET request to update a Dynacard.
-router.get('/dynacard/:id/update', dynacard_controller.dynacard_update_get);
 
-// POST request to update a Dynacard.
-router.post('/dynacard/:id/update', dynacard_controller.dynacard_update_post);
 
 
 
