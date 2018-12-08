@@ -23,8 +23,8 @@ html(lang='en')
           div
             form(method='POST', action='/catalog/upload' enctype='multipart/form-data')
               div.form-group
-                label(for='upload_files') Upload Card Files:
-                input#upload_files.form-control(type='file' multiple name='fileupload')
+                label(for='upload_files' style='display: block;') Upload Card Files:
+                input#upload_files.form-control(type='file' multiple name='fileupload' style='display:block;')
               button.btn.btn-primary(type='submit') Upload
           div
             form(method='POST', action='/catalog/filter')

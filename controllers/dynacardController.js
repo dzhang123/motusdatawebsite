@@ -8,7 +8,7 @@ var Dynacard = require('../models/dynacard');
 var CardType = require('../models/cardtype');
 
 const { body, validationResult } = require('express-validator/check');
-const { sanitizedBody } = require('express-validator/filter');
+const { sanitizeBody } = require('express-validator/filter');
 
 var async = require('async');
 
@@ -238,5 +238,47 @@ exports.dynacard_update_get = (req, res, next) => {
 };
 
 exports.dynacard_update_post = [
-    
+    // validate that the name field is not empty.
+    body('name', 'Dynacard name required').isLength({min: 1}).trim(),
+
+    // Sanitize (trim and escape) the name field,
+    sanitizeBody('name').trim().escape(),
+
+    // validate that the minimum Weight field is not empty, and is Number
+    body('minimumweight', 'Dynacard minimum weight required').isNumeric(),
+
+    // Process request after validation and sanitization
+    (req, res, next) => {
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+        
+        // Create a dynacard object with escaped and trimmed data (and the old id!)
+        Dynacard.findById(req.params.id, (err, oldcard) => {
+            if (err) { return next(err);}
+
+            var dynacard = new Dynacard (
+                {
+                    name: req.body.name,
+                    filePath: oldcard.filePath,
+                    minimumWeight: req.body.minimumweight,
+                    cardtype: oldcard.cardtype,
+                    _id: req.params.id
+                }
+            );
+
+            if (!errors.isEmpty()) {
+                // There are errors. Render the form again with sanitized values and error messages.
+                res.render('dynacard_form', {title: 'Update Dynacard', dynacard:dynacard, errors: errors.array()});
+                return;
+            }
+            else {
+                // Data from form is valid. Update the record.
+                Dynacard.findByIdAndUpdate(req.params.id, dynacard, {}, (err, theDynacard) => {
+                    if (err) { return next(err);}
+                    // success - redirect to dynacard detail page
+                    res.redirect(theDynacard.url);
+                });
+            }
+            });
+    }
 ];

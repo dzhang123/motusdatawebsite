@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    section
+        form(method='POST' action='')
+            div.form-group
+                label(for='name') Card Name: 
+                input#name.form-control(type="text", placeholder="Dynacard Name", name='name' required='true' value=(undefined===dynacard? '' : dynacard.name))
+                label(for='filepath') File Path:
+                input#filepath.form-control(type='text' placeholder='Dynacard File Path' name='filepath' required='true' value=(undefined===dynacard? '': dynacard.filePath) disabled='true')
+                label(for='minimunweight') Minimun Weight:
+                input#minimumweight.form-control(type='text' placeholder='Minimun Weight' name='minimumweight' required='true' value=(undefined===dynacard? '': dynacard.minimumWeight))
+                label(for='cardtype') Dynacard Type:
+                input#cardtype.form-control(type='text' placeholder='Dynacard Type' name='cardtype' required='true' value=(undefined===dynacard? '': dynacard.cardtype.name) disabled='true')
+            button.btn.btn-secondary(type='submit') Submit
+        
+        if errors
+            ul
+                for error in errors
+                    li!= error.msg

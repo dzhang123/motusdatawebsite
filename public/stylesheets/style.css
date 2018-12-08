@@ -2,7 +2,7 @@
 
 html {
   font-family: Georgia, serif;
-  font-size: 10px;
+  font-size: 16px;
 }
 
 body {
@@ -19,26 +19,26 @@ h1, h2 {
 }
 
 h1 {
-  font-size: 5rem;
+  font-size: 2rem;
   /*background: url(icons/bean_can.png) no-repeat 20% center, url(icons/bean_can.png) no-repeat 80% center;*/
   background-size: 48px 48px;
 }
 
 h2 {
-  font-size: 2rem;
-  color: yellow;
+  font-size: 1.5rem;
+  /*color: yellow;*/
   text-align: right;
   width: 160px;
   position: absolute;
   right: 4%;
   z-index: 3000;
-  text-shadow: 2px 2px 1px black;
+  /*text-shadow: 2px 2px 1px black;*/
   line-height: 2rem;
   padding-top: 0.3rem;
 }
 
 p, label, input, select, button, li {
-  font-size: 1.5rem;
+  font-size: 1.0rem;
 }
 
 li {
@@ -90,10 +90,11 @@ aside div {
   margin-bottom: 20px;
 }
 
+/*
 label, select, input {
   display: block;
 }
-
+*/
 label {
   margin-bottom: 5px;
 }
@@ -116,6 +117,7 @@ input {
 }
 
 button.btn.btn-primary {
+  font-size: 1rem;
   background: black;
   color: yellow;
   padding: 5px 0;
@@ -135,7 +137,7 @@ main {
 section {
   width: 300px;
   margin: 5px;
-  background-color: black;
+  /*background-color: black;*/
   position: relative;
   height: 300px;
 }
@@ -144,7 +146,7 @@ section input[type="checkbox"] {
   /*font-size: 2rem;*/
   /*width: 160px;*/
   position: absolute;
-  left: 45px;
+  left: 35px;
   top: 5px;
   z-index: 3000;
 }
@@ -163,7 +165,7 @@ section img {
 }
 
 section p {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: yellow;
   background: black;
   width: 80px;

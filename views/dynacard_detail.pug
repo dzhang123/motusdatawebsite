@@ -7,7 +7,7 @@ block content
         p #{dynacard.cardtype.name}
         img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)
         
-    form
+    div
         p 
             a(href=dynacard.url +'/delete') 
                 button.btn.btn-secondary(name='delete') Delete Dynacard
