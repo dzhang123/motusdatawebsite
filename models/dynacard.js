@@ -1,7 +1,7 @@
 'use strict';
+var moment = require('moment');
 
 // It makes sense at the current moment to combine card.js and dynacard.js until it is clear to separate them.
-
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
@@ -32,6 +32,12 @@ DynacardSchema
 .virtual('url')
 .get(function() {
     return '/catalog/dynacard/' + this._id;
-})
+});
+
+DynacardSchema
+.virtual('last_modified_formatted')
+.get(() => {
+    return moment(this.lastModified).format('YYYY-MM-DD');
+});
 
 module.exports = mongoose.model('Dynacard', DynacardSchema);

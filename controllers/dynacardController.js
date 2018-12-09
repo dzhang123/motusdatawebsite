@@ -262,6 +262,7 @@ exports.dynacard_update_post = [
                     filePath: oldcard.filePath,
                     minimumWeight: req.body.minimumweight,
                     cardtype: oldcard.cardtype,
+                    lastModified: Date.now(),
                     _id: req.params.id
                 }
             );

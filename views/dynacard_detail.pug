@@ -1,8 +1,8 @@
-extends layout
+extends index
 
 block content
     section(class=dynacard.name)
-        input(type='checkbox' class='card-selector') 
+        //input(type='checkbox' class='card-selector') 
         h2 #{dynacard.name}.csv
         p #{dynacard.cardtype.name}
         img(src='/processed/' + dynacard.name + '.png', alt=dynacard.name)

@@ -12,6 +12,8 @@ block content
                 input#minimumweight.form-control(type='text' placeholder='Minimun Weight' name='minimumweight' required='true' value=(undefined===dynacard? '': dynacard.minimumWeight))
                 label(for='cardtype') Dynacard Type:
                 input#cardtype.form-control(type='text' placeholder='Dynacard Type' name='cardtype' required='true' value=(undefined===dynacard? '': dynacard.cardtype.name) disabled='true')
+                label(for='lastmodified') Last Modified:
+                input#lastmodified.form-control(type='text' placeholder='Last Modified Date/Time' name='lastmodified' required='true' value=(undefined===dynacard? '' : dynacard.last_modified_formatted) disabled='true')
             button.btn.btn-secondary(type='submit') Submit
         
         if errors
