@@ -17,4 +17,10 @@ var CardTypeSchema = new Schema(
         description: {type: String, default: ''}                                
     });
 
+CardTypeSchema
+.virtual('possibleCardTypes')
+.get(() => {
+    return this.schema.path('name').enumValues;
+});
+
 module.exports = mongoose.model ('CardType', CardTypeSchema);

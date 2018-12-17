@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 
 var dynacard_controller = require('../controllers/dynacardController');
+var cardtype_controller = require('../controllers/cardtypeController');
 
 /// ROUTES ///
 
@@ -53,4 +54,9 @@ router.get('/card/create', card_controller.cardinfo_create_get);
 router.post('/card/create', card_controller.card_create_post);
 
 */
+
+
+// GET request for all possible card types supported.
+router.get('/cardtype/possibleCardTypes', cardtype_controller.possible_card_types);
+
 module.exports = router;

@@ -47,6 +47,7 @@ html(lang='en')
           block content
       footer
         p what is in the footer
+      
       script.
         $(document).ready(function () {
           var options = {
@@ -74,5 +75,7 @@ html(lang='en')
           return URL.createObjectURL(blob);
         }
       
+      script(src='/javascripts/layout.js')
+
       block customscript
 
