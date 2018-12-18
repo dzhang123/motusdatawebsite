@@ -24,6 +24,37 @@ exports.index = (req, res) => {
     });
 };
 
+// POST request for specific category dynacards
+exports.category_post = (req, res, next) => {
+    var category = req.body.category;
+    if (category.toLowerCase() === 'all') {
+        res.redirect('/');
+    }
+    else {
+        async.waterfall(
+            [
+                function (callback) {
+                    CardType.find({name: category}).limit(1)
+                    .exec(function (err, results) {
+                        if (err) { return next (err); }
+                        callback(null, results[0]._id);
+                    })
+                },
+                function (cardType_id, callback) {
+                    Dynacard.find({'cardtype': cardType_id})
+                    .populate('cardtype')
+                    .exec(function (err, cards) {
+                        callback(null, cards);
+                    })
+                }
+            ], function (err, list_cards) {
+                if (err) { return next(err);}
+                res.render('index', {title: 'Dynacard Home', error: err, dynacards: list_cards});
+            }
+        )
+    }
+}
+
 exports.dynacard_create_get = (req, res) => {
     res.send('To be implemented');
 };

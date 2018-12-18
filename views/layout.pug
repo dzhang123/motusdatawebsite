@@ -27,11 +27,12 @@ html(lang='en')
                 input#upload_files.form-control(type='file' multiple name='fileupload' style='display:block;')
               button.btn.btn-primary(type='submit') Upload
           div
-            form(method='POST' action='/catalog/category')
+            form(method='POST' action='/catalog/category' id='category-form')
               div.form-group
                 label(for='category') Choose A Pump State Category:
                 select#category(name="category")
                   option(value='0') All
+              button.btn.btn-primary(type='submit' id='category-button' visible='false' height='0px')
           div
             form(method='POST', action='/catalog/filter')
               div.form-group
@@ -74,7 +75,7 @@ html(lang='en')
         function createObjectURL(blob) {
           return URL.createObjectURL(blob);
         }
-      
+      script(src='http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
       script(src='/javascripts/layout.js')
 
       block customscript
