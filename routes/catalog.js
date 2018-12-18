@@ -55,10 +55,14 @@ router.post('/card/create', card_controller.card_create_post);
 
 */
 
-// POST request for partiicular category dynacards
+// POST request for partiicular category dynacards when selected from dropdown list
 router.post('/category', dynacard_controller.category_post);
 
 // GET request for all possible card types supported.
-router.get('/cardtype/possibleCardTypes', cardtype_controller.possible_card_types);
+router.get('/cardtypes', cardtype_controller.cardtype_list);
+
+router.post('/filter', dynacard_controller.category_filter_post);
+
+
 
 module.exports = router;

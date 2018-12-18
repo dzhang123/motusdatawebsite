@@ -24,6 +24,34 @@ exports.index = (req, res) => {
     });
 };
 
+exports.category_filter_post = (req, res, next) => {
+    var category = req.body.category;
+    var search_term = req.body.searchTerm;
+    if (category.toLowerCase() === 'all') {
+        if ( !search_term || search_term.trim() === '') {
+            res.redirect('/');
+        } else {
+            Dynacard.find({name: 
+                                {$text: {
+                                            $search: search_term.value.trim(),
+                                            $caseSensitive: false
+                                         }
+                                }
+                            })
+                    .exec(function (err, results) {
+                        if (err) {
+                            return next (err);
+                        }
+                        var length = results.length;
+                    });
+        }
+    } else {
+        res.redirect('/');
+    }
+}
+
+
+
 // POST request for specific category dynacards
 exports.category_post = (req, res, next) => {
     var category = req.body.category;

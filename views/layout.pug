@@ -27,18 +27,31 @@ html(lang='en')
                 input#upload_files.form-control(type='file' multiple name='fileupload' style='display:block;')
               button.btn.btn-primary(type='submit') Upload
           div
-            form(method='POST' action='/catalog/category' id='category-form')
+            form(method='POST' action='/catalog/filter')
               div.form-group
                 label(for='category') Choose A Pump State Category:
-                select#category(name="category")
-                  option(value='0') All
-              button.btn.btn-primary(type='submit' id='category-button' visibility='collapse')
-          div
-            form(method='POST', action='/catalog/filter')
+                select#category(name='category')
+                  option(value='you') you
+                  option(value='all') All
               div.form-group
-                label(for='filter_results') Enter Search Term:
-                input#filter_results.form-control(type='text' placeholder='full pump')
-              button.btn.btn-primary(type='submit') Filter Search Results
+                label(for='searchTerm') Enter Search Term:
+                input#searchTerm.form-control(type='text' placeholder='full pump')
+              button.btn.btn-primary(type='submit' id='search-button') Filter Search Results
+
+          //div
+          //  form(method='POST' action='/catalog/category' id='category-form')
+          //    div.form-group
+          //      label(for='category') Choose A Pump State Category:
+          //      select#category(name="category")
+          //        option(value='all') All
+          //    button.btn.btn-primary(type='submit' id='category-button' visibility='collapse')
+          //div
+          //  form(method='POST', action='/catalog/filter')
+          //    div.form-group
+          //      label(for='search-term') Enter Search Term:
+          //      input#search-term.form-control(type='text' placeholder='full pump')
+          //    button.btn.btn-primary(type='submit' id='search-button') Filter Search Results
+            
           div
             form(method='POST' action='/catalog/run')
               button.btn.btn-primary(type='submit' id='run-button' ) Run Analysis
