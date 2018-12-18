@@ -126,6 +126,10 @@ button.btn.btn-primary {
   box-shadow: inset 1px 1px 2px white, inset -1px -1px 2px #ccc;
 }
 
+#category-button {
+  cursor: none;
+  visibility: collapse;
+}
 /* Styling the products */
 
 main {
@@ -168,7 +172,7 @@ section p {
   font-size: 0.8rem;
   color: yellow;
   background: black;
-  width: 80px;
+  width: 120px;
   height: 30px;
   line-height: 30px;
   text-align: center;

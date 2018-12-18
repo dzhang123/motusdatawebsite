@@ -32,7 +32,7 @@ html(lang='en')
                 label(for='category') Choose A Pump State Category:
                 select#category(name="category")
                   option(value='0') All
-              button.btn.btn-primary(type='submit' id='category-button' visible='false' height='0px')
+              button.btn.btn-primary(type='submit' id='category-button' visibility='collapse')
           div
             form(method='POST', action='/catalog/filter')
               div.form-group
