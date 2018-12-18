@@ -116,6 +116,11 @@ exports.category_post = (req, res, next) => {
     }
 }
 
+// POST request for selected card analysis
+exports.analysis_post = (req, res, next) => {
+    res.send("not implemented");
+}
+
 exports.dynacard_create_get = (req, res) => {
     res.send('To be implemented');
 };

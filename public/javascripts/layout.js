@@ -54,3 +54,19 @@ function initialize() {
     });
 
 }
+
+function testclick () {
+    var hiddenInput = document.querySelector('#hiddenFormInput');
+    if (hiddenInput) {
+      hiddenInput.parentNode.removeChild(hiddenInput);
+    }
+    var checkedCards = localStorage.getItem('checkedCardList');
+    if (checkedCards) {
+      let input = document.createElement('input');
+      input.setAttribute('id', 'hiddenFormInput');
+      input.setAttribute('name', 'checkedCartList');
+      input.setAttribute('value', checkCards);
+      input.setAttribute('type', 'hidden');
+      document.querySelector('#analysis-form').appendChild(input);
+    }
+  }

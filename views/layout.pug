@@ -53,8 +53,8 @@ html(lang='en')
           //    button.btn.btn-primary(type='submit' id='search-button') Filter Search Results
             
           div
-            form(method='POST' action='/catalog/run')
-              button.btn.btn-primary(type='submit' id='run-button' ) Run Analysis
+            form(method='POST' action='/catalog/analysis' id='anaylsis-form')
+              button.btn.btn-primary(type='submit' id='run-button' onClick='testclick()') Run Analysis
               //button(type='submit' disabled='true' id='run-button') Run Analysis
               //button(type='submit' display='collapse' id='run-button') Run Analysis
         main
@@ -88,6 +88,7 @@ html(lang='en')
         function createObjectURL(blob) {
           return URL.createObjectURL(blob);
         }
+        
       script(src='http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
       script(src='/javascripts/layout.js')
 
