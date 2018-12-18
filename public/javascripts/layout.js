@@ -9,7 +9,7 @@ fetch ('http://localhost:3000/catalog/cardtypes',
     if (response.ok) {
         response.text().then(function (text) {
             cardTypes = text.split(',');
-            console.log(cardTypes);
+            //console.log(cardTypes);
             initialize();
         });
     }
@@ -23,25 +23,34 @@ function initialize() {
     var catetory_btn = document.querySelector('#category-button');
     var search_term = document.querySelector('#searchTerm');
     var search_btn = document.querySelector('#search-button');
+    var lastCategory = localStorage.getItem("category");
+    var lastSearchTerm = localStorage.getItem("searchTerm");
     for (let type of cardTypes) {
         opt = document.createElement('option');
         opt.setAttribute('value', type);
         opt.textContent = type;
+        if (type === lastCategory) {
+            opt.setAttribute('selected', true);
+        }
         category.appendChild(opt);
     };
+    search_term.value = lastSearchTerm? lastSearchTerm : "";
+
     category.addEventListener('change', function () {
-        console.log(category);
+        localStorage.setItem("category", category.value);
+       //console.log(category);
         //search_term.value = '';
-        search_btn.click();
+        //search_btn.click();
         //$('#category-button').trigger('click');
     });
     search_term.addEventListener('input', function () {
-        if (search_term.value.trim() !== '') {
-            search_btn.disabled = false;
-        }
-        else {
-            search_btn.disabled = true;
-        }
+        // if (search_term.value.trim() !== '') {
+        //     search_btn.disabled = false;
+        // }
+        // else {
+        //     search_btn.disabled = true;
+        // }
+        localStorage.setItem("searchTerm", search_term.value.trim());
     });
 
 }

@@ -30,27 +30,60 @@ exports.category_filter_post = (req, res, next) => {
     if (category.toLowerCase() === 'all') {
         if ( !search_term || search_term.trim() === '') {
             res.redirect('/');
-        } else {
+        } 
+        else {
             Dynacard.find({name: 
-                                {$text: {
-                                            $search: search_term.value.trim(),
-                                            $caseSensitive: false
-                                         }
-                                }
+                                {$in: [search_term.trim()]}
+                                //{$regex: /search_term.trim()/}
+                                /* {
+                                    $text: {
+                                        $search: search_term.trim(),
+                                        $caseSensitive: false
+                                    }
+                                } */
                             })
+                    .populate('cardtype')
                     .exec(function (err, results) {
                         if (err) {
                             return next (err);
                         }
                         var length = results.length;
+                        res.render('index', {title: 'Dynacard Home', error: err, dynacards: results});
+        
                     });
         }
     } else {
-        res.redirect('/');
+        async.waterfall (
+            [
+                function (callback) {
+                    CardType.find({name: category.trim()}).limit(1)
+                    .exec(function (err, results) {
+                        if (err) { return next(err);}
+                        if (!results || results.length === 0) {
+                            var e = new Error('No matching card type found');
+                            return next(e);
+                        }
+                        callback(null, results[0]._id);
+                    })
+                },
+                function (cardType_id, callback) {
+                    Dynacard.find({'cardtype': cardType_id, name: {$in:[search_term.trim()]}})
+                    .populate('cardtype')
+                    .exec(function (err, cards) {
+                        if (err) { return next(err);}
+                        if (!cards || cards.length === 0) {
+                            var e = new Error('No matching dynacard found');
+                            return next(e);
+                        }
+                        callback(null, cards);
+                    })
+                }
+            ], function (err, list_cards) {
+                if (err) { return next(err);}
+                res.render('index', {title: 'Dynacard Home', error: err, dynacards: list_cards});
+            });
     }
 }
-
-
 
 // POST request for specific category dynacards
 exports.category_post = (req, res, next) => {
@@ -189,7 +222,7 @@ function updateDB(cardtype_id, uploadDir, file) {
             let dynacard;
             if (cards.length === 0) {
                 dynacard = new Dynacard ({
-                    name: file.split('.').shift(),
+                    name: file.split('.').shift(), //.replace(/-|_/, " "),
                     filePath: uploadDir + '/' + file,
                     lastModified: Date.now(),
                     minimumWeight: 0.0001,
@@ -207,7 +240,7 @@ function updateDB(cardtype_id, uploadDir, file) {
             else {
                 dynacard = new Dynacard ({
                     _id: cards[0]._id,
-                    name: file.split('.').shift(),
+                    name: file.split('.').shift(), //.replace(/-|_/, " "),
                     filePath: uploadDir + '/' + file,
                     lastModified: Date.now(),
                     minimumWeight: 0.0001,

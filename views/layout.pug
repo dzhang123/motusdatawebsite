@@ -26,16 +26,16 @@ html(lang='en')
                 label(for='upload_files') Upload Card Files:
                 input#upload_files.form-control(type='file' multiple name='fileupload' style='display:block;')
               button.btn.btn-primary(type='submit') Upload
+          hr
           div
             form(method='POST' action='/catalog/filter')
               div.form-group
                 label(for='category') Choose A Pump State Category:
                 select#category(name='category')
-                  option(value='you') you
                   option(value='all') All
               div.form-group
                 label(for='searchTerm') Enter Search Term:
-                input#searchTerm.form-control(type='text' placeholder='full pump')
+                input#searchTerm.form-control(type='text' name='searchTerm' placeholder='full pump')
               button.btn.btn-primary(type='submit' id='search-button') Filter Search Results
 
           //div
