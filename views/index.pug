@@ -3,7 +3,7 @@ extends layout
 block content
     each dynacard in dynacards
         section(class=dynacard.name)
-            input(type='checkbox' class='card-selector') 
+            input(type='checkbox' class='card-selector' id=dynacard._id) 
             h2 #{dynacard.name}.csv
             p #{dynacard.cardtype.name}
             a(href=dynacard.url ondblclick='location=this.href' onclick='return false')
@@ -21,10 +21,15 @@ block customscript
                 runbutton.style.visibility = 'visible';
                 runbutton.style.cursor = 'default';
 
-                //- let hiddenItem = localStorage.getItem('hiddenFormInput');
-                //- if (hiddenItem) {
-                  
-                //- }
+                let checkedCardList = localStorage.getItem('checkedCardList');
+                if (checkedCardList) {
+                  if (!checkedCardList.includes(this.id)) {
+                    checkedCardList += ' ' + this.id;
+                    localStorage.setItem('checkedCardList', checkedCardList.trim());
+                  }
+                } else {
+                  localStorage.setItem('checkedCardList', this.id);
+                }
               }
               else {
                 var checkedSelector=false;
@@ -37,6 +42,13 @@ block customscript
                 if (! checkedSelector) {
                   let runbutton = document.getElementById('run-button');
                   runbutton.style.visibility = 'collapse';
+                }
+                let checkedCardList = localStorage.getItem('checkedCardList');
+                if (checkedCardList) {
+                  if (checkedCardList.includes(this.id)) {
+                    checkedCardList = checkedCardList.replace(this.id, ' ');
+                    localStorage.setItem('checkedCardList', checkedCardList.trim());
+                  }
                 }
               }
             });

@@ -64,8 +64,8 @@ function testclick () {
     if (checkedCards) {
       let input = document.createElement('input');
       input.setAttribute('id', 'hiddenFormInput');
-      input.setAttribute('name', 'checkedCartList');
-      input.setAttribute('value', checkCards);
+      input.setAttribute('name', 'checkedCardList');
+      input.setAttribute('value', checkedCards);
       input.setAttribute('type', 'hidden');
       document.querySelector('#analysis-form').appendChild(input);
     }

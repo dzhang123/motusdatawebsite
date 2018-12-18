@@ -53,8 +53,8 @@ html(lang='en')
           //    button.btn.btn-primary(type='submit' id='search-button') Filter Search Results
             
           div
-            form(method='POST' action='/catalog/analysis' id='anaylsis-form')
-              button.btn.btn-primary(type='submit' id='run-button' onClick='testclick()') Run Analysis
+            form(method='POST' action='/catalog/analysis' id='anaylsis-form' name='analysis-form')
+              button.btn.btn-primary(type='submit' id='run-button' name='run-button' onClick='testclick()') Run Analysis
               //button(type='submit' disabled='true' id='run-button') Run Analysis
               //button(type='submit' display='collapse' id='run-button') Run Analysis
         main
