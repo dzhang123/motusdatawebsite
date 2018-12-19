@@ -62,7 +62,7 @@ function testclick () {
     }
     var checkedCards = localStorage.getItem('checkedCardList');
     if (checkedCards) {
-      let input = document.createElement('input');
+      var input = document.createElement('input');
       input.setAttribute('id', 'hiddenFormInput');
       input.setAttribute('name', 'checkedCardList');
       input.setAttribute('value', checkedCards);

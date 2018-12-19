@@ -118,14 +118,63 @@ exports.category_post = (req, res, next) => {
 }
 
 // POST request for selected card analysis
-exports.analysis_post = (req, res, next) => {
-    res.send("not implemented");
+exports.analysis_post = async (req, res, next) => {
+    
+    await reProcessUploadedFilesAsync(req, res, next);
+    var checkedCards = req.body.checkedCardList;
+    var checkedCardList = checkedCards.split(' ');
+    var newList = [];
+    var e;
+    if (checkedCardList && checkedCardList.length > 0) {
+        checkedCardList.map ( dynacard_id => {
+            Dynacard.findById(dynacard_id, function (err, result) {
+                if (err) { e = err; //return next(err);
+                }
+                newList.push(result);
+            })
+        })
+    }
+    res.render('index', {title: 'Dyncards Home', error: e, dynacards: newList});
+
 }
 
 exports.dynacard_create_get = (req, res) => {
     res.send('To be implemented');
 };
 
+async function reProcessUploadedFilesAsync(req, res, next) {
+    var checkedCards = req.body.checkedCardList;
+    var checkedCardList = checkedCards.split(' ');
+    
+    if (checkedCardList && checkedCardList.length > 0) {
+        checkedCardList.map(async dynacard_id => {
+            try {
+                Dynacard.findById(dynacard_id, async function (err, result) {
+                    if (err) { return next(err);}
+                    let card = result;
+                    let filePath = card.filePath;
+                    let file = filePath.slice(filePath.lastIndexOf('/') + 1);
+                    filePath = filePath.slice(0, filePath.lastIndexOf('/'));
+                    try {
+                        let myfile = await generateImage(filePath.replace('uploads', 'processed'), file);
+                        let mystate = await evaluatePump(filePath.replace('uploads', 'processed'), myfile, card.minimumWeight);
+                        let mycardtype_id = await searchDB(mystate);
+                        Dynacard.findByIdAndUpdate(card._id,
+                            {cardtype: mycardtype_id,
+                            filePath: filePath + '/' + file,
+                            lastModified: Date.now()}, 
+                            {},
+                            function (err, theDynacard) {});
+                    } catch (e) {
+                        console.log(e);
+                    }
+                })
+            } catch (error) {
+                console.log(error);
+            };
+        });
+    };
+}
 // POST request to upload dynacard files, csv files
 exports.dynacard_upload_post = (req, res, next) => {
     var form = new formidable.IncomingForm(), 
@@ -165,7 +214,7 @@ async function processUploadLoadedFilesAsync(req, res, next) {
         files.map(async file => {
             try {
                 let myfile = await generateImage(uploadDir, file);
-                let mystate = await evaluatePump(uploadDir, myfile);
+                let mystate = await evaluatePump(uploadDir, myfile, 0.001);
                 let mycardtype_id = await searchDB(mystate);
                 let mydynacard_id = await updateDB(mycardtype_id, uploadDir, myfile);
                 await moveProcessedFile(uploadDir, processedDir, myfile);
@@ -193,10 +242,10 @@ function generateImage(uploadDir, file) {
 };
 
 // evaluate the pump state and return the state
-function evaluatePump(uploadDir, file) {
+function evaluatePump(uploadDir, file, minimumWeight) {
     return new Promise((resolve, reject) => {
         const spawn = require('child_process').spawn;
-        const runPy = spawn('python', ['./evaluateCsv.py', uploadDir + '/' + file, 0.0001]);
+        const runPy = spawn('python', ['./evaluateCsv.py', uploadDir + '/' + file, minimumWeight]);
         runPy.stdout.on('data', (data) => {
             resolve(data.toString().trim());
         });
